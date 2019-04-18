@@ -1,16 +1,13 @@
 defmodule IslandsEngine.Island do
   alias IslandsEngine.{Coordinate, Island}
 
-  @enforce_keys [:coordinates, :hit_coordinates]
-  defstruct [:coordinates, :hit_coordinates]
+  @enforce_keys [:coordinates, :hit_coordinates, :is_forested]
+  defstruct [:coordinates, :hit_coordinates, :is_forested]
 
   def new(type, %Coordinate{} = upper_left) do
     with [_|_] = offsets <- offsets(type),
-      %MapSet{} = coordinates <- add_coordinates(offsets, upper_left)
-    do
-      {:ok, %Island{coordinates: coordinates, hit_coordinates: MapSet.new()}}
-    else
-      error -> error
+      %MapSet{} = coordinates <- add_coordinates(offsets, upper_left) do
+      {:ok, %Island{coordinates: coordinates, hit_coordinates: MapSet.new(), is_forested: false}}
     end
   end
 
@@ -34,4 +31,31 @@ defmodule IslandsEngine.Island do
       {:error, :invalid_coordinate} -> {:halt, {:error, :invalid_coordinate}}
     end
   end
+
+  def overlaps?(existing_island, new_island) do
+    not MapSet.disjoint?(existing_island.coordinates, new_island.coordinates)
+  end
+
+  def guess(island, coordinate) do
+    case MapSet.member?(island.coordinates, coordinate) do
+      true ->
+        hit_coordinates = MapSet.put(island.hit_coordinates, coordinate)
+        {:hit, %{island | hit_coordinates: hit_coordinates}}
+      false -> :miss
+    end
+  end
+
+  defp forested?(island) do
+    MapSet.equal?(island.coordinates, island.hit_coordinates)
+  end
+
+  def update_if_forested(island) do
+    case forested?(island) do
+      true -> {:forested, %{island | is_forested: true}}
+      false -> {:not_forested, island}
+    end
+  end
+
+  @spec types() :: [:atoll | :dot | :l_shape | :s_shape | :square, ...]
+  def types(), do: [:atoll, :dot, :l_shape, :s_shape, :square]
 end
