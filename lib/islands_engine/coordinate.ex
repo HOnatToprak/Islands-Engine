@@ -1,5 +1,5 @@
 defmodule IslandsEngine.Coordinate do
-  alias IslandsEngine.{Coordinate, Island}
+  alias IslandsEngine.{Coordinate}
 
   @enforce_keys [:row, :col]
   defstruct [:row, :col]

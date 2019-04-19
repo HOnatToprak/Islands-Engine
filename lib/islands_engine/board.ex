@@ -1,5 +1,5 @@
 defmodule IslandsEngine.Board do
-  alias IslandsEngine.{Coordinate, Guesses, Island}
+  alias IslandsEngine.{Coordinate, Island}
 
   def new(), do: %{}
 
