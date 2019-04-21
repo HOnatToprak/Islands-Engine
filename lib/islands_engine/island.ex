@@ -5,8 +5,8 @@ defmodule IslandsEngine.Island do
   defstruct [:coordinates, :hit_coordinates, :is_forested]
 
   def new(type, %Coordinate{} = upper_left) do
-    with [_|_] = offsets <- offsets(type),
-      %MapSet{} = coordinates <- add_coordinates(offsets, upper_left) do
+    with [_ | _] = offsets <- offsets(type),
+         %MapSet{} = coordinates <- add_coordinates(offsets, upper_left) do
       {:ok, %Island{coordinates: coordinates, hit_coordinates: MapSet.new(), is_forested: false}}
     end
   end
@@ -24,8 +24,7 @@ defmodule IslandsEngine.Island do
     end)
   end
 
-  defp add_coordinate(coordinates, %Coordinate{row: row, col: col},
-  {row_offset, col_offset}) do
+  defp add_coordinate(coordinates, %Coordinate{row: row, col: col}, {row_offset, col_offset}) do
     case Coordinate.new(row + row_offset, col + col_offset) do
       {:ok, coordinate} -> {:cont, MapSet.put(coordinates, coordinate)}
       {:error, :invalid_coordinate} -> {:halt, {:error, :invalid_coordinate}}
@@ -41,7 +40,9 @@ defmodule IslandsEngine.Island do
       true ->
         hit_coordinates = MapSet.put(island.hit_coordinates, coordinate)
         {:hit, %{island | hit_coordinates: hit_coordinates}}
-      false -> :miss
+
+      false ->
+        :miss
     end
   end
 

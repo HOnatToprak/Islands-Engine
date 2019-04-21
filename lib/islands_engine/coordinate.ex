@@ -6,7 +6,7 @@ defmodule IslandsEngine.Coordinate do
 
   @board_range 1..10
 
-  def new(row, col) when row in(@board_range) and col in(@board_range) do
+  def new(row, col) when row in @board_range and col in @board_range do
     {:ok, %Coordinate{row: row, col: col}}
   end
 

@@ -22,7 +22,4 @@ erl_crash.dump
 # Ignore package tarball (built via "mix hex.build").
 islands_engine-*.tar
 
-#intellij
-islands_engine.iml
-
-/.idea/
+/.elixir_ls/
