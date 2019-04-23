@@ -36,11 +36,12 @@ defmodule IslandsEngine.Board do
     end)
   end
 
-  defp guess_response({key, {is_forested: is_forested}}, board) do
+  defp guess_response({key, %{is_forested: is_forested}}, board) do
+    island = Map.fetch(board, key)
     board = %{board | key => island}
     case is_forested do
-      :true -> {:hit, key, win_check(board), board}
-      :false -> {:hit, :none, :no_win, board}
+      true -> {:hit, key, win_check(board), board}
+      false -> {:hit, :none, :no_win, board}
     end
   end
 

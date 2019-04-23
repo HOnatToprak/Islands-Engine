@@ -52,8 +52,8 @@ defmodule IslandsEngine.Island do
 
   def update_if_forested(island) do
     case forested?(island) do
-      true -> {:forested, %{island | is_forested: true}}
-      false -> {:not_forested, island}
+      true -> %Island{island | is_forested: true}
+      false -> island
     end
   end
 
