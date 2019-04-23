@@ -6,9 +6,11 @@ defmodule IslandsEngine.Application do
   use Application
 
   def start(_type, _args) do
+    :ets.new(:game_state, [:public, :named_table])
     # List all child processes to be supervised
     children = [
-      {Registry, keys: :unique, name: Registry.Game}
+      {Registry, keys: :unique, name: Registry.Game},
+      IslandsEngine.GameSupervisor
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

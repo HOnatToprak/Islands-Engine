@@ -40,13 +40,12 @@ defmodule IslandsEngine.Island do
       true ->
         hit_coordinates = MapSet.put(island.hit_coordinates, coordinate)
         {:hit, %{island | hit_coordinates: hit_coordinates}}
-
       false ->
         :miss
     end
   end
 
-  defp forested?(island) do
+  def forested?(island) do
     MapSet.equal?(island.coordinates, island.hit_coordinates)
   end
 

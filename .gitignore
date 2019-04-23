@@ -23,3 +23,5 @@ erl_crash.dump
 islands_engine-*.tar
 
 /.elixir_ls/
+
+/.vscode/
