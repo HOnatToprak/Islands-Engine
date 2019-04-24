@@ -29,8 +29,14 @@ defmodule IslandsEngine.Game do
     {:noreply, state_data, @timeout}
   end
 
+  def terminate({:shutdown, :timeout}, state_data) do
+    :ets.delete(:game_state, state_data.player1.name)
+    :ok
+  end
+  def terminate(_reason, _state), do: :ok
+
   def add_player(game, name) when is_binary(name) do
-    GenServer.call(game, {:add_player, name}, @timeout)
+    GenServer.call(game, {:add_player, name})
   end
 
   @players [:player1, :player2]
@@ -42,8 +48,8 @@ defmodule IslandsEngine.Game do
     {:reply, state, state}
   end
 
-  def handle_call({:add_player, name}, _from, state) do
-    with  {:ok, rules} <- Rules.check(state.rules, :add_player)
+  def handle_call({:add_player, name}, _from,%{rules: rules} = state) do
+    with  {:ok, rules} <- Rules.check(rules, :add_player)
     do
       state
       |> update_player2_name(name)
@@ -122,7 +128,7 @@ defmodule IslandsEngine.Game do
   defp fresh_state(name) do
     player1 = %{name: name, board: Board.new(), guesses: Guesses.new()}
     player2 = %{name: nil, board: Board.new(), guesses: Guesses.new()}
-    {%{player1: player1, player2: player2, rules: %Rules{}}}
+    %{player1: player1, player2: player2, rules: %Rules{}}
   end
 
   defp player_board(state, player) do
